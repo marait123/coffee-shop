@@ -9,18 +9,20 @@ AUTH0_DOMAIN = 'dev-7c34-e31.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'CafeApi'
 
-## AuthError Exception
+# AuthError Exception
 '''
 AuthError Exception
 A standardized way to communicate auth failure modes
 '''
+
+
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
         self.status_code = status_code
 
 
-## Auth Header
+# Auth Header
 
 '''
 @TODO implement get_token_auth_header() method
@@ -30,6 +32,7 @@ class AuthError(Exception):
         it should raise an AuthError if the header is malformed
     return the token part of the header
 '''
+
 
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
@@ -70,10 +73,13 @@ def get_token_auth_header():
         payload: decoded jwt payload
 
     it should raise an AuthError if permissions are not included in the payload
-        !!NOTE check your RBAC settings in Auth0
-    it should raise an AuthError if the requested permission string is not in the payload permissions array
+    !!NOTE check your RBAC settings in Auth0
+    it should raise an AuthError if the requested permission
+    string is not in the payload permissions array
     return true otherwise
 '''
+
+
 def check_permissions(permissions, payload):
     if 'permissions' not in payload:
         return False
@@ -92,8 +98,8 @@ def check_permissions(permissions, payload):
     it should validate the claims
     return the decoded payload
 
-    !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
+
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
@@ -136,7 +142,7 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
+                'description': 'Incorrect claims. check the audience.'
             }, 401)
         except Exception:
             raise AuthError({
@@ -152,22 +158,13 @@ def verify_decode_jwt(token):
     @INPUTS
         permission: string permission (i.e. 'post:drink')
 
-    it should use the get_token_auth_header method to get the token
-    it should use the verify_decode_jwt method to decode the jwt
-    it should use the check_permissions method validate claims and check the requested permission
-    return the decorator which passes the decoded payload to the decorated method
+    it should use the get_token_auth_header method to get the token.
+    it should use the verify_decode_jwt method to decode the jwt.
+    it should use the check_permissions method validate
+    claims and check the requested permission.
+    return the decorator which passes the decoded payload
+    to the decorated method.
 '''
-# def requires_auth(permission=''):
-#     def requires_auth_decorator(f):
-#         @wraps(f)
-#         def wrapper(*args, **kwargs):
-#             token = get_token_auth_header()
-#             payload = verify_decode_jwt(token)
-#             check_permissions(permission, payload)
-#             return f(payload, *args, **kwargs)
-
-#         return wrapper
-#     return requires_auth_decorator
 
 
 def requires_auth(permissions):
@@ -181,9 +178,9 @@ def requires_auth(permissions):
             try:
                 payload = verify_decode_jwt(token)
 
-                is_authorized = check_permissions(permissions,payload)
+                is_authorized = check_permissions(permissions, payload)
                 if not is_authorized:
-                    raise AuthError("you are n't authorized",403)
+                    raise AuthError("you are n't authorized", 403)
             except AuthError:
                 abort(403)
             except:
