@@ -68,8 +68,13 @@ def post_drinks(payload):
     try:
         data = request.get_json()
         # print(data)
+        if data.get('id',None):
+            del data['id']
+        if type(data['recipe']) == type([]):        
+            data['recipe'] = json.dumps(data['recipe'])
         drink = Drink(**data)
         drink.insert()
+        drink = Drink.query.get(drink.id)
         drinks=[drink.long()]
     except IntegrityError:
         abort(422)
@@ -100,6 +105,8 @@ def update_drink(payload,id):
         abort(404)
     try:
         data = request.get_json()
+        if type(data['recipe']) == type([]):
+            data['recipe'] = json.dumps(data['recipe'])
         for field in data:
             setattr(drink,field,data[field])
         drink.update()
