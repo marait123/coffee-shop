@@ -1,3 +1,19 @@
+venv/
+.vscode/
+__pycache__/
+test.db
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+#node dependencies
 # Logs
 logs
 *.log
@@ -102,3 +118,19 @@ dist
 
 # TernJS port file
 .tern-port
+# ionic
+node_modules
+www
+.idea
+.temp
+.sass-cache
+<%= appPath %>/bower_components
+coverage
+platforms
+plugins
+*.swp
+*.swo
+*.log
+*.DS_Store
+
+app/scripts/configuration.js
